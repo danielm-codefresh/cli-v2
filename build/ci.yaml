@@ -60,7 +60,6 @@ steps:
         - name: compare_versions
           on:
             - success
-
   lint:
     <<: *deps
     stage: Test
@@ -71,63 +70,6 @@ steps:
     when:
       steps:
         - name: download_modules
-          on:
-            - success
-
-  codegen:
-    <<: *deps
-    stage: Test
-    title: check codegen
-    commands:
-      - make codegen
-      - make check-worktree
-    when:
-      steps:
-        - name: download_modules
-          on:
-            - success
-
-  test:
-    <<: *deps
-    stage: Test
-    title: run tests
-    commands:
-      - make test
-    when:
-      steps:
-        - name: lint
-          on:
-            - success
-
-  codecov-report:
-    stage: Test
-    type: codecov-reporter
-    title: report code coverage
-    arguments:
-      codecov_integration: ${{CODECOV_INTEGRATION}}
-    when:
-      steps:
-        - name: test
-          on:
-            - success
-
-  build:
-    stage: Build
-    title: build docker image
-    type: build
-    image_name: ${{IMAGE_NAME}}
-    tag: ${{CF_BRANCH_TAG_NORMALIZED}}
-    buildkit: true
-    disable_push: true
-    build_arguments:
-      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
-      - SEGMENT_WRITE_KEY=${{SEGMENT_WRITE_KEY}}
-    when:
-      condition:
-        all:
-          isBinary: '"${{REPO_TYPE}}" != "lib"'
-      steps:
-        - name: compare_versions
           on:
             - success
 
@@ -162,18 +104,9 @@ steps:
       maxAttempts: 3
       delay: 1
     when:
-      condition:
-        all:
-          isBinary: '"${{REPO_TYPE}}" != "lib"'
-      branch:
-        only: ["main"]
+      # branch:
+      # only ["main"]
       steps:
-        - name: test
-          on:
-            - success
-        - name: codegen
-          on:
-            - success
         - name: lint
           on:
             - success
@@ -186,17 +119,6 @@ steps:
       - export GIT_REPO=${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
       - export GIT_BRANCH=${{CF_BRANCH}}
       - make release
-    when:
-      condition:
-        all:
-          isBinary: '"${{REPO_TYPE}}" == "lib"'
-      steps:
-        - name: test
-          on:
-            - success
-        - name: codegen
-          on:
-            - success
 
   create_release_bin:
     <<: *deps
@@ -207,12 +129,9 @@ steps:
       - export GIT_BRANCH=${{CF_BRANCH}}
       - make release
     when:
-      branch:
-        only: ["main"]
+      # branch:
+      #   only: ["main"]
       steps:
         - name: build_binaries
-          on:
-            - success
-        - name: build
           on:
             - success
