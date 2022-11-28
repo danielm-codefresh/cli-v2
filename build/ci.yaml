@@ -35,18 +35,6 @@ steps:
           on:
             - success
 
-  compare_versions:
-    stage: Prepare
-    title: compare versions
-    image: alpine/semver
-    commands:
-      - semver "${{VERSION}}" -r ">${{LATEST_VERSION}}" || (echo "bump version! current is ${{VERSION}} latest is ${{LATEST_VERSION}}" && exit 1)
-    when:
-      steps:
-        - name: prepare_env_vars
-          on:
-            - success
-
   download_modules:
     <<: *deps
     stage: Prepare
@@ -55,11 +43,6 @@ steps:
       - git config --global url."https://github:${GITHUB_TOKEN}@github.com".insteadOf  "https://github.com"
       - go mod tidy
       - make clean
-    when:
-      steps:
-        - name: compare_versions
-          on:
-            - success
   lint:
     <<: *deps
     stage: Test
