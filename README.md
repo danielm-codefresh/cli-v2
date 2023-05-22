@@ -1,5 +1,5 @@
 <p align="center"><img src="./docs/assets/logo.svg" alt="Argo Logo"></p>
-!!!
+!!!!
 # Codefresh CLI V2
 
 [![Codefresh build status]( https://g.codefresh.io/api/badges/pipeline/codefresh-inc/golang%2Fci?type=cf-1)]( https://g.codefresh.io/public/accounts/codefresh-inc/pipelines/new/60ae2ae330acb8f9c9bace7f)
